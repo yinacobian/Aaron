@@ -1,0 +1,22 @@
+rule hi:
+        output:
+                "hello"
+        shell:
+                "ls > {output}"
+
+rule example:
+		input:
+		f1="file1"
+		f2="file2"
+		f3="file3"
+		
+
+IDS, = glob_wildcards("{sample}.fastq")
+
+SAMPLES, = glob_wildcards(join(READDIR, '{sample}.fastq'))
+
+mkdir sge_out 
+mkdir sge_err
+
+snakemake -s file-with-commands -j 200 --cluster "qsub -o sge_out -e sge_err -V --latency-wait 30"
+
